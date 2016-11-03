@@ -3,6 +3,8 @@ class MessageListInbox extends MessageList
 		super
 		@reload = true
 		@loading = false
+		@loading_message = "Loading..."
+		@nolimit_loaded = false
 		@messages = []
 		@my_aes_keys = {}
 		@title = "Inbox"
@@ -16,9 +18,12 @@ class MessageListInbox extends MessageList
 	decryptKnownAesKeys: (parsed_db, cb) ->
 		load_keys = ([user_address, secret_id] for user_address, secret_id of parsed_db.my_secret if not @my_aes_keys[user_address])
 		if load_keys.length > 0
-			@log "Loading keys", load_keys
-			where = ("(directory = '#{user_address}' AND date_added = #{parseInt(secret_id)})" for [user_address, secret_id] in load_keys)
-			query = "SELECT * FROM secret LEFT JOIN json USING (json_id) WHERE #{where.join(' OR ')}"
+			@log "Loading keys", load_keys.length
+			# where = ("(directory = '#{user_address}' AND date_added = #{parseInt(secret_id)})" for [user_address, secret_id] in load_keys)
+			directories = ("'#{user_address}'" for [user_address, secret_id] in load_keys)
+			dates = (parseInt(secret_id) for [user_address, secret_id] in load_keys)
+			where = "directory IN (#{directories.join(',')}) AND date_added IN (#{dates.join(',')})"
+			query = "SELECT * FROM secret LEFT JOIN json USING (json_id) WHERE #{where}"
 			Page.cmd "dbQuery", query, (rows) =>
 				Page.cmd "eciesDecrypt", [(row.encrypted for row in rows)], (decrypted_keys) =>
 					for decrypted_key, i in decrypted_keys
@@ -30,14 +35,18 @@ class MessageListInbox extends MessageList
 
 
 	decryptNewSecrets: (parsed_db, cb) ->
-		parsed_sql = []
+		last_parsed = 0
+		# parsed_sql = []
 		known_addresses = []
-		for user_address, last_parsed of parsed_db.last_secret
-			parsed_sql.push("(directory = '#{user_address}' AND date_added > #{last_parsed})")
+		for user_address, user_last_parsed of parsed_db.last_secret
+			last_parsed = Math.max(user_last_parsed, last_parsed)
+			# parsed_sql.push("(directory = '#{user_address}' AND date_added > #{last_parsed})")
 			known_addresses.push("'#{user_address}'")
 
+		@log "Last parsed secret:", Date(last_parsed)
+
 		if known_addresses.length > 0
-			where = "WHERE #{parsed_sql.join(' OR ')} OR directory NOT IN (#{known_addresses.join(",")})"
+			where = "WHERE date_added > #{last_parsed-60*60*24*1000} OR directory NOT IN (#{known_addresses.join(",")})"
 		else
 			where = ""
 
@@ -52,11 +61,16 @@ class MessageListInbox extends MessageList
 				cb(false)
 				return false
 
-			secrets = (row.encrypted for row in db_res)
+			db_rows = []
+			for row in db_res
+				if not parsed_db.last_secret[row.directory]? or parsed_db.last_secret[row.directory] < row.date_added
+					db_rows.push(row)
+
+			secrets = (row.encrypted for row in db_rows)
 			Page.cmd "eciesDecrypt", [secrets], (aes_keys) =>
 				new_secrets = {}
 				for aes_key, i in aes_keys
-					db_row = db_res[i]
+					db_row = db_rows[i]
 					if aes_key  # Successfully decrypted key, assign it to user
 						new_secrets[db_row.directory] = db_row.date_added
 						parsed_db.my_secret[db_row.directory] = db_row.date_added
@@ -66,11 +80,19 @@ class MessageListInbox extends MessageList
 				cb(new_secrets)
 
 
-	decryptNewMessages: (parsed_db, new_secrets, cb) ->
-		parsed_sql = []
 
+	decryptNewMessages: (parsed_db, new_secrets, cb) ->
+
+		# Group queries to 100 to make it work after 1000 contacts
+		parsed_sql = []
+		group = []
 		for user_address, last_parsed of parsed_db.last_message
-			parsed_sql.push("(directory = '#{user_address}' AND date_added > #{last_parsed})")
+			group.push("(directory = '#{user_address}' AND date_added > #{last_parsed})")
+			if group.length == 100
+				parsed_sql.push("("+group.join(" OR ")+")")
+				group = []
+		if group.length > 0
+			parsed_sql.push("("+group.join(" OR ")+")")
 
 		new_addresses = []
 		for user_address, aes_key of @my_aes_keys
@@ -107,7 +129,7 @@ class MessageListInbox extends MessageList
 				cb(found)
 
 
-	loadMessages: (parsed_db, cb) ->
+	loadMessages: (parsed_db, limit, cb) ->
 		my_message_ids = []
 		for address, ids of parsed_db.my_message
 			my_message_ids = my_message_ids.concat(ids)
@@ -119,6 +141,8 @@ class MessageListInbox extends MessageList
 			WHERE date_added IN (#{my_message_ids.join(",")}) AND date_added NOT IN (#{Page.local_storage.deleted.join(",")})
 			ORDER BY date_added DESC
 		"""
+		if limit
+			query += " LIMIT #{limit+1}"
 		Page.cmd "dbQuery", [query], (db_rows) =>
 			aes_keys = (aes_key for address, aes_key of @my_aes_keys)
 			encrypted_messages = (row.encrypted.split(",") for row in db_rows)
@@ -134,35 +158,51 @@ class MessageListInbox extends MessageList
 					message_row.from = db_row.username
 					message_row.from_address = db_row.directory
 					message_row.folder = "inbox"
+
+					if not limit
+						message_row.disable_animation = true
+					if i < limit or not limit
+						message_rows.push(message_row)
+
 					message_rows.push(message_row)
 				@syncMessages(message_rows)
+				@has_more = limit and decrypted_messages.length >= limit and not @nolimit_loaded
 				Page.projector.scheduleRender()
 				cb(message_rows)
 
 
-	getMessages: ->
+	getMessages: (mode="normal") ->
+		if mode == "nolimit"
+			limit = null
+			@nolimit_loaded = true
+		else
+			limit = 15
 		if @reload and Page.site_info
 			@loading = true
 			@reload = false
 			@logStart "getMessages"
 			Page.on_local_storage.then =>
 				parsed_db = Page.local_storage.parsed
+				@setLoadingMessage "Loading known AES keys..."
 				@decryptKnownAesKeys parsed_db, (loaded_keys) =>
-					@log "Loaded known AES keys", loaded_keys
+					@log "Loaded known AES keys"
+					@setLoadingMessage "Decrypting new secrets..."
 					@decryptNewSecrets parsed_db, (new_secrets) =>
-						@log "New secrets found", new_secrets
+						@log "New secrets found"
 						if not isEmpty(new_secrets)
 							Page.leftbar.reload_contacts = true
+						@setLoadingMessage "Decrypting new messages..."
 						@decryptNewMessages parsed_db, new_secrets, (found) =>
 							@log "New messages found", found
-							if not found and @messages.length > 0
-								@logEnd "getMessages", "No new messages"
+							@setLoadingMessage "Loading messages..."
+							if not found and @messages.length > 0 and mode != "nolimit"
+								@logEnd "getMessages", "No new messages in mode #{mode}"
 								Page.local_storage.parsed = parsed_db
 								@loading = false
 								@loaded = true
 								return false
-							@loadMessages parsed_db, (message_rows) =>
-								@logEnd "getMessages", "Loaded messages", message_rows.length
+							@loadMessages parsed_db, limit, (message_rows) =>
+								@logEnd "getMessages", "Loaded messages in mode #{mode}", message_rows.length
 								Page.local_storage.parsed = parsed_db
 								Page.saveLocalStorage()
 								@loading = false
@@ -176,6 +216,8 @@ class MessageListInbox extends MessageList
 		super
 		if message.row.message_id not in Page.local_storage.deleted
 			Page.local_storage.deleted.push(message.row.message_id)
-			Page.saveLocalStorage()
+
+	save: ->
+		Page.saveLocalStorage()
 
 window.MessageListInbox = MessageListInbox

@@ -18,9 +18,15 @@ h5, h6 { font-weight: normal; color: #999 }
 }
 .Leftbar .folders a.active { color: rgba(255, 255, 255, 1); background-color: rgba(255, 255, 255, 0.05) }
 .Leftbar .folders a:hover { color: rgba(255, 255, 255, 1); background-color: rgba(255, 255, 255, 0.05); transition: 0s }
-
+.Leftbar .quota {
+	float: right; font-size: 11px; padding: 5px;
+	margin-top: -1px; font-weight: normal; opacity: 0.7
+}
 .Leftbar h2 { opacity: 0.5; color: white; padding: 5px 20px; font-size: 11px; text-transform: uppercase; margin-top: 50px }
+.Leftbar .contacts-wrapper { height: calc(100vh - 340px);  overflow: hidden; }
+.Leftbar .contacts {overflow-y: scroll; height: 100%; padding-right: 100px; margin-right: -100px; }
 .Leftbar .contacts a { padding: 5px 20px; display: block; color: rgba(255, 255, 255, 0.7); font-size: 14px; font-weight: normal; transition: 0.3s }
+.Leftbar .contacts a:last-child { margin-bottom: 60px }
 .Leftbar .contacts a:hover { color: rgba(255, 255, 255, 1); transition: none }
 .Leftbar .logout { bottom: 0px; position: absolute; padding: 10px; opacity: 0.5; transition: all 0.3s }
 .Leftbar .logout:hover { opacity: 0.8; transition: none }
@@ -37,7 +43,7 @@ h5, h6 { font-weight: normal; color: #999 }
 	display: block; padding-left: 26px; clear: both; transition: all 0.3s
 }
 .MessageList .Message:hover { background-color: #F7F9F9; transition: none }
-.MessageList .Message.active { background-color: #FFFAE5; border-bottom: 1px solid #FAF0C8; border-top: 1px solid #FAF0C8; box-shadow: 0px 1px 4px rgba(0,0,0,0.1); transition: all 0.5s }
+.MessageList .Message.active, .MessageList .Message.selected { background-color: #FFFAE5; border-bottom: 1px solid #FAF0C8; border-top: 1px solid #FAF0C8; box-shadow: 0px 1px 4px rgba(0,0,0,0.1); transition: all 0.5s }
 .MessageList .Message:before { content: "\2022"; float: left; padding: 19px 0px; font-size: 25px; color: #74BBFE; font-family: Arial; margin-left: -17px; opacity: 0; transition: all 0.3s; transform: scale(1.5) }
 .MessageList .Message.unread:before { opacity: 1; transform: scale(1) }
 .MessageList .Message:first-child { border-top: none }
@@ -45,7 +51,13 @@ h5, h6 { font-weight: normal; color: #999 }
 .MessageList .Message .from, .MessageList .Message .to { color: #3D3D3D; font-size: 80%; font-weight: bold; margin-top: 4px }
 .MessageList .Message .subject { color: black; font-weight: bold; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
 .MessageList .Message .preview { color: #6F6E6E; margin-top: 5px; margin-bottom: 5px; font-weight: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
+.MessageList .more {
+	display: none; text-align: center; padding: 25px; color: #666; border: 1px solid #eee; border-right: 0px; transition: all 0.3s;
+	box-shadow: inset 0px -1px 29px -2px rgba(0,0,0,0.1); font-size: 13px; text-transform: uppercase; margin-bottom: -10px;
+}
+.MessageList .more:hover { background-color: #FFFAE5; transition: none; text-decoration: underline; }
+.MessageList .more.visible { display: block }
+.MessageList .more.loading { opacity: 0.5; pointer-events: none }
 /* Right */
 
 .right { width: 682px; margin-left: 626px; box-sizing: border-box; background-color: white; min-height: 100% }
@@ -61,6 +73,8 @@ h5, h6 { font-weight: normal; color: #999 }
 .StartScreen .button-certselect { left: 50%; margin-left: -80px; position: relative; }
 
 .MessageShow { padding: 40px 50px }
+.MessageShow .empty { color: #DDD; text-align: center; top: 50%; margin-top: 50% }
+.MessageShow .selected { color: #AAA; text-align: center; top: 50%; margin-top: 50% }
 .MessageShow .subject { font-size: 210%; font-weight: lighter; }
 .MessageShow .tools { float: right; margin-top: 15px; margin-right: -6px; }
 .MessageShow .tools .icon { opacity: 0.3; transition: all 0.3s; padding: 5px; margin-left: 10px; border-radius: 30px }
@@ -72,6 +86,10 @@ h5, h6 { font-weight: normal; color: #999 }
 .MessageShow .body { line-height: 1.5em; margin-top: 20px; color: #111; font-family: monospace; font-size: 16px; word-wrap: break-word; }
 .MessageShow .body blockquote { border-left: 5px solid #eee; padding: 5px; padding-left: 15px; margin: 10px 0px; background-color: #FBFBFB; }
 .MessageShow .body blockquote p { margin: 0px; font-size: 90% }
+.MessageShow .body pre, .MessageShow .body code {
+	background-color: #FBFBFB; padding: 3px 4px; border: solid 1px #e1e4e5; font-family: Consolas, Monaco, monospace; font-size: 13px; overflow-x: auto;
+}
+.MessageShow .body pre code { background-color: #FBFBFB; padding: none; border: none; overflow-x: auto; }
 .MessageShow .Message { transition: all 1s }
 .MessageShow .Message.deleted { perspective: 900px }
 .MessageShow .Message.deleted * { transform: scale(0.5) rotateX(-90deg); opacity: 0; transition: all 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045); }

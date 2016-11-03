@@ -18,6 +18,9 @@ class Leftbar extends Class
 	handleFolderClick: (e) =>
 		folder_name = e.currentTarget.href.replace(/.*\?/, "")
 		@folder_active = folder_name.toLowerCase()
+
+		Page.message_lists.setActive(@folder_active)
+
 		Page.cmd "wrapperReplaceState", [{}, "", folder_name]
 		return false
 
@@ -32,14 +35,8 @@ class Leftbar extends Class
 
 	loadContacts: (cb) ->
 		addresses = (address for address of Page.local_storage.parsed.my_secret)
-		query = """
-			SELECT directory, value AS cert_user_id
-			FROM json
-			LEFT JOIN keyvalue USING (json_id)
-			WHERE ? AND file_name = 'content.json' AND key = 'cert_user_id'
-		"""
-		Page.cmd "dbQuery", [query, {directory: addresses}], (rows) ->
-			contacts = ([row.cert_user_id, row.directory] for row in rows)
+		Page.users.getUsernames addresses, (rows) ->
+			contacts = ([cert_user_id, auth_address] for auth_address, cert_user_id of rows)
 			cb contacts
 
 	getContacts: ->
@@ -64,18 +61,23 @@ class Leftbar extends Class
 			h("a.logo", {href: "?Main"}, ["ZeroMail_"])
 			h("a.button-create.newmessage", {href: "#New+message", onclick: @handleNewMessageClick}, ["New message"])
 			h("div.folders", [
-				h("a", {key: "Inbox", href: "?Inbox", classes: {"active": @folder_active == "inbox"}, onclick: @handleFolderClick}, ["Inbox"])
-				h("a", {key: "Sent", href: "?Sent", classes: {"active": @folder_active == "sent"}, onclick: @handleFolderClick}, ["Sent"])
+				h("a", {key: "Inbox", href: "?Inbox", classes: {"active": Page.message_lists.active == Page.message_lists.inbox }, onclick: @handleFolderClick}, ["Inbox"])
+				h("a", {key: "Sent", href: "?Sent", classes: {"active": Page.message_lists.active == Page.message_lists.sent }, onclick: @handleFolderClick}, [
+					"Sent",
+					h("span.quota", Page.user.formatQuota())
+				])
 			])
 			if contacts.length > 0
 				[
 					h("h2", ["Contacts"]),
-					h("div.contacts", contacts.map ([username, address]) =>
-						h("a.username", {key: username, href: Page.createUrl("to", username.replace("@zeroid.bit", "")), onclick: @handleContactClick, "enterAnimation": Animation.show}, [
-							h("span.bullet", {"style": "color: #{Text.toColor(address)}"}, ["•"]),
-							h("span.name", [username.replace("@zeroid.bit", "")])
-						])
-					)
+					h("div.contacts-wrapper", [
+						h("div.contacts", contacts.map ([username, address]) =>
+							h("a.username", {key: username, href: Page.createUrl("to", username.replace("@zeroid.bit", "")), onclick: @handleContactClick, "enterAnimation": Animation.show}, [
+								h("span.bullet", {"style": "color: #{Text.toColor(address)}"}, ["•"]),
+								h("span.name", [username.replace("@zeroid.bit", "")])
+							])
+						)
+					])
 				]
 			if Page.site_info?.cert_user_id then h("a.logout.icon.icon-logout", {href: "?Logout", title: "Logout", onclick: @handleLogoutClick})
 		])

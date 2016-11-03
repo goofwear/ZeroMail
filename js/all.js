@@ -1,6 +1,43 @@
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/lib/Promise.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/lib/Base64Number.js ---- */
+
+
+window.Base64Number = {
+    _Rixits : "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/",
+    fromNumber : function(number) {
+        if (isNaN(Number(number)) || number === null ||
+            number === Number.POSITIVE_INFINITY)
+            throw "The input is not valid";
+        if (number < 0)
+            throw "Can't represent negative numbers now";
+
+        var rixit; // like 'digit', only in some non-decimal radix
+        var residual = Math.floor(number);
+        var result = '';
+        while (true) {
+            rixit = residual % 64
+            result = this._Rixits.charAt(rixit) + result;
+            residual = Math.floor(residual / 64);
+            if (residual == 0)
+                break;
+            }
+        return result;
+    },
+
+    toNumber : function(rixits) {
+        var result = 0;
+        rixits = rixits.split('');
+        for (var e = 0; e < rixits.length; e++) {
+            result = (result * 64) + this._Rixits.indexOf(rixits[e]);
+        }
+        return result;
+    }
+};
+
+
+
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/lib/Promise.coffee ---- */
 
 
 (function() {
@@ -82,29 +119,29 @@
   s = Date.now()
   log = (text) ->
   	console.log Date.now()-s, Array.prototype.slice.call(arguments).join(", ")
-
+  
   log "Started"
-
+  
   cmd = (query) ->
   	p = new Promise()
   	setTimeout ( ->
   		p.resolve query+" Result"
   	), 100
   	return p
-
+  
   back = cmd("SELECT * FROM message").then (res) ->
   	log res
   	return "Return from query"
   .then (res) ->
   	log "Back then", res
-
+  
   log "Query started", back
    */
 
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/lib/Property.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/lib/Property.coffee ---- */
 
 
 (function() {
@@ -115,7 +152,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/lib/maquette.js ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/lib/maquette.js ---- */
 
 
 (function (global) {
@@ -1117,7 +1154,7 @@
 
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/lib/marked.min.js ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/lib/marked.min.js ---- */
 
 
 /**
@@ -1128,7 +1165,7 @@
 (function(){var block={newline:/^\n+/,code:/^( {4}[^\n]+\n*)+/,fences:noop,hr:/^( *[-*_]){3,} *(?:\n+|$)/,heading:/^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,nptable:noop,lheading:/^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,blockquote:/^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,list:/^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,html:/^ *(?:comment|closed|closing) *(?:\n{2,}|\s*$)/,def:/^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,table:noop,paragraph:/^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def))+)\n*/,text:/^[^\n]+/};block.bullet=/(?:[*+-]|\d+\.)/;block.item=/^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/;block.item=replace(block.item,"gm")(/bull/g,block.bullet)();block.list=replace(block.list)(/bull/g,block.bullet)("hr","\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))")("def","\\n+(?="+block.def.source+")")();block.blockquote=replace(block.blockquote)("def",block.def)();block._tag="(?!(?:"+"a|em|strong|small|s|cite|q|dfn|abbr|data|time|code"+"|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo"+"|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|[^\\w\\s@]*@)\\b";block.html=replace(block.html)("comment",/<!--[\s\S]*?-->/)("closed",/<(tag)[\s\S]+?<\/\1>/)("closing",/<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)(/tag/g,block._tag)();block.paragraph=replace(block.paragraph)("hr",block.hr)("heading",block.heading)("lheading",block.lheading)("blockquote",block.blockquote)("tag","<"+block._tag)("def",block.def)();block.normal=merge({},block);block.gfm=merge({},block.normal,{fences:/^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\1 *(?:\n+|$)/,paragraph:/^/});block.gfm.paragraph=replace(block.paragraph)("(?!","(?!"+block.gfm.fences.source.replace("\\1","\\2")+"|"+block.list.source.replace("\\1","\\3")+"|")();block.tables=merge({},block.gfm,{nptable:/^ *(\S.*\|.*)\n *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*/,table:/^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*/});function Lexer(options){this.tokens=[];this.tokens.links={};this.options=options||marked.defaults;this.rules=block.normal;if(this.options.gfm){if(this.options.tables){this.rules=block.tables}else{this.rules=block.gfm}}}Lexer.rules=block;Lexer.lex=function(src,options){var lexer=new Lexer(options);return lexer.lex(src)};Lexer.prototype.lex=function(src){src=src.replace(/\r\n|\r/g,"\n").replace(/\t/g,"    ").replace(/\u00a0/g," ").replace(/\u2424/g,"\n");return this.token(src,true)};Lexer.prototype.token=function(src,top,bq){var src=src.replace(/^ +$/gm,""),next,loose,cap,bull,b,item,space,i,l;while(src){if(cap=this.rules.newline.exec(src)){src=src.substring(cap[0].length);if(cap[0].length>1){this.tokens.push({type:"space"})}}if(cap=this.rules.code.exec(src)){src=src.substring(cap[0].length);cap=cap[0].replace(/^ {4}/gm,"");this.tokens.push({type:"code",text:!this.options.pedantic?cap.replace(/\n+$/,""):cap});continue}if(cap=this.rules.fences.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"code",lang:cap[2],text:cap[3]});continue}if(cap=this.rules.heading.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"heading",depth:cap[1].length,text:cap[2]});continue}if(top&&(cap=this.rules.nptable.exec(src))){src=src.substring(cap[0].length);item={type:"table",header:cap[1].replace(/^ *| *\| *$/g,"").split(/ *\| */),align:cap[2].replace(/^ *|\| *$/g,"").split(/ *\| */),cells:cap[3].replace(/\n$/,"").split("\n")};for(i=0;i<item.align.length;i++){if(/^ *-+: *$/.test(item.align[i])){item.align[i]="right"}else if(/^ *:-+: *$/.test(item.align[i])){item.align[i]="center"}else if(/^ *:-+ *$/.test(item.align[i])){item.align[i]="left"}else{item.align[i]=null}}for(i=0;i<item.cells.length;i++){item.cells[i]=item.cells[i].split(/ *\| */)}this.tokens.push(item);continue}if(cap=this.rules.lheading.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"heading",depth:cap[2]==="="?1:2,text:cap[1]});continue}if(cap=this.rules.hr.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"hr"});continue}if(cap=this.rules.blockquote.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"blockquote_start"});cap=cap[0].replace(/^ *> ?/gm,"");this.token(cap,top,true);this.tokens.push({type:"blockquote_end"});continue}if(cap=this.rules.list.exec(src)){src=src.substring(cap[0].length);bull=cap[2];this.tokens.push({type:"list_start",ordered:bull.length>1});cap=cap[0].match(this.rules.item);next=false;l=cap.length;i=0;for(;i<l;i++){item=cap[i];space=item.length;item=item.replace(/^ *([*+-]|\d+\.) +/,"");if(~item.indexOf("\n ")){space-=item.length;item=!this.options.pedantic?item.replace(new RegExp("^ {1,"+space+"}","gm"),""):item.replace(/^ {1,4}/gm,"")}if(this.options.smartLists&&i!==l-1){b=block.bullet.exec(cap[i+1])[0];if(bull!==b&&!(bull.length>1&&b.length>1)){src=cap.slice(i+1).join("\n")+src;i=l-1}}loose=next||/\n\n(?!\s*$)/.test(item);if(i!==l-1){next=item.charAt(item.length-1)==="\n";if(!loose)loose=next}this.tokens.push({type:loose?"loose_item_start":"list_item_start"});this.token(item,false,bq);this.tokens.push({type:"list_item_end"})}this.tokens.push({type:"list_end"});continue}if(cap=this.rules.html.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:this.options.sanitize?"paragraph":"html",pre:cap[1]==="pre"||cap[1]==="script"||cap[1]==="style",text:cap[0]});continue}if(!bq&&top&&(cap=this.rules.def.exec(src))){src=src.substring(cap[0].length);this.tokens.links[cap[1].toLowerCase()]={href:cap[2],title:cap[3]};continue}if(top&&(cap=this.rules.table.exec(src))){src=src.substring(cap[0].length);item={type:"table",header:cap[1].replace(/^ *| *\| *$/g,"").split(/ *\| */),align:cap[2].replace(/^ *|\| *$/g,"").split(/ *\| */),cells:cap[3].replace(/(?: *\| *)?\n$/,"").split("\n")};for(i=0;i<item.align.length;i++){if(/^ *-+: *$/.test(item.align[i])){item.align[i]="right"}else if(/^ *:-+: *$/.test(item.align[i])){item.align[i]="center"}else if(/^ *:-+ *$/.test(item.align[i])){item.align[i]="left"}else{item.align[i]=null}}for(i=0;i<item.cells.length;i++){item.cells[i]=item.cells[i].replace(/^ *\| *| *\| *$/g,"").split(/ *\| */)}this.tokens.push(item);continue}if(top&&(cap=this.rules.paragraph.exec(src))){src=src.substring(cap[0].length);this.tokens.push({type:"paragraph",text:cap[1].charAt(cap[1].length-1)==="\n"?cap[1].slice(0,-1):cap[1]});continue}if(cap=this.rules.text.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"text",text:cap[0]});continue}if(src){throw new Error("Infinite loop on byte: "+src.charCodeAt(0))}}return this.tokens};var inline={escape:/^\\([\\`*{}\[\]()#+\-.!_>])/,autolink:/^<([^ >]+(@|:\/)[^ >]+)>/,url:noop,tag:/^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,link:/^!?\[(inside)\]\(href\)/,reflink:/^!?\[(inside)\]\s*\[([^\]]*)\]/,nolink:/^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/,strong:/^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,em:/^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,code:/^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,br:/^ {2,}\n(?!\s*$)/,del:noop,text:/^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/};inline._inside=/(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/;inline._href=/\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;inline.link=replace(inline.link)("inside",inline._inside)("href",inline._href)();inline.reflink=replace(inline.reflink)("inside",inline._inside)();inline.normal=merge({},inline);inline.pedantic=merge({},inline.normal,{strong:/^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)/,em:/^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)/});inline.gfm=merge({},inline.normal,{escape:replace(inline.escape)("])","~|])")(),url:/^(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/,del:/^~~(?=\S)([\s\S]*?\S)~~/,text:replace(inline.text)("]|","~]|")("|","|https?://|")()});inline.breaks=merge({},inline.gfm,{br:replace(inline.br)("{2,}","*")(),text:replace(inline.gfm.text)("{2,}","*")()});function InlineLexer(links,options){this.options=options||marked.defaults;this.links=links;this.rules=inline.normal;this.renderer=this.options.renderer||new Renderer;this.renderer.options=this.options;if(!this.links){throw new Error("Tokens array requires a `links` property.")}if(this.options.gfm){if(this.options.breaks){this.rules=inline.breaks}else{this.rules=inline.gfm}}else if(this.options.pedantic){this.rules=inline.pedantic}}InlineLexer.rules=inline;InlineLexer.output=function(src,links,options){var inline=new InlineLexer(links,options);return inline.output(src)};InlineLexer.prototype.output=function(src){var out="",link,text,href,cap;while(src){if(cap=this.rules.escape.exec(src)){src=src.substring(cap[0].length);out+=cap[1];continue}if(cap=this.rules.autolink.exec(src)){src=src.substring(cap[0].length);if(cap[2]==="@"){text=cap[1].charAt(6)===":"?this.mangle(cap[1].substring(7)):this.mangle(cap[1]);href=this.mangle("mailto:")+text}else{text=escape(cap[1]);href=text}out+=this.renderer.link(href,null,text);continue}if(!this.inLink&&(cap=this.rules.url.exec(src))){src=src.substring(cap[0].length);text=escape(cap[1]);href=text;out+=this.renderer.link(href,null,text);continue}if(cap=this.rules.tag.exec(src)){if(!this.inLink&&/^<a /i.test(cap[0])){this.inLink=true}else if(this.inLink&&/^<\/a>/i.test(cap[0])){this.inLink=false}src=src.substring(cap[0].length);out+=this.options.sanitize?escape(cap[0]):cap[0];continue}if(cap=this.rules.link.exec(src)){src=src.substring(cap[0].length);this.inLink=true;out+=this.outputLink(cap,{href:cap[2],title:cap[3]});this.inLink=false;continue}if((cap=this.rules.reflink.exec(src))||(cap=this.rules.nolink.exec(src))){src=src.substring(cap[0].length);link=(cap[2]||cap[1]).replace(/\s+/g," ");link=this.links[link.toLowerCase()];if(!link||!link.href){out+=cap[0].charAt(0);src=cap[0].substring(1)+src;continue}this.inLink=true;out+=this.outputLink(cap,link);this.inLink=false;continue}if(cap=this.rules.strong.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.strong(this.output(cap[2]||cap[1]));continue}if(cap=this.rules.em.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.em(this.output(cap[2]||cap[1]));continue}if(cap=this.rules.code.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.codespan(escape(cap[2],true));continue}if(cap=this.rules.br.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.br();continue}if(cap=this.rules.del.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.del(this.output(cap[1]));continue}if(cap=this.rules.text.exec(src)){src=src.substring(cap[0].length);out+=escape(this.smartypants(cap[0]));continue}if(src){throw new Error("Infinite loop on byte: "+src.charCodeAt(0))}}return out};InlineLexer.prototype.outputLink=function(cap,link){var href=escape(link.href),title=link.title?escape(link.title):null;return cap[0].charAt(0)!=="!"?this.renderer.link(href,title,this.output(cap[1])):this.renderer.image(href,title,escape(cap[1]))};InlineLexer.prototype.smartypants=function(text){if(!this.options.smartypants)return text;return text.replace(/--/g,"—").replace(/(^|[-\u2014/(\[{"\s])'/g,"$1‘").replace(/'/g,"’").replace(/(^|[-\u2014/(\[{\u2018\s])"/g,"$1“").replace(/"/g,"”").replace(/\.{3}/g,"…")};InlineLexer.prototype.mangle=function(text){var out="",l=text.length,i=0,ch;for(;i<l;i++){ch=text.charCodeAt(i);if(Math.random()>.5){ch="x"+ch.toString(16)}out+="&#"+ch+";"}return out};function Renderer(options){this.options=options||{}}Renderer.prototype.code=function(code,lang,escaped){if(this.options.highlight){var out=this.options.highlight(code,lang);if(out!=null&&out!==code){escaped=true;code=out}}if(!lang){return"<pre><code>"+(escaped?code:escape(code,true))+"\n</code></pre>"}return'<pre><code class="'+this.options.langPrefix+escape(lang,true)+'">'+(escaped?code:escape(code,true))+"\n</code></pre>\n"};Renderer.prototype.blockquote=function(quote){return"<blockquote>\n"+quote+"</blockquote>\n"};Renderer.prototype.html=function(html){return html};Renderer.prototype.heading=function(text,level,raw){return"<h"+level+' id="'+this.options.headerPrefix+raw.toLowerCase().replace(/[^\w]+/g,"-")+'">'+text+"</h"+level+">\n"};Renderer.prototype.hr=function(){return this.options.xhtml?"<hr/>\n":"<hr>\n"};Renderer.prototype.list=function(body,ordered){var type=ordered?"ol":"ul";return"<"+type+">\n"+body+"</"+type+">\n"};Renderer.prototype.listitem=function(text){return"<li>"+text+"</li>\n"};Renderer.prototype.paragraph=function(text){return"<p>"+text+"</p>\n"};Renderer.prototype.table=function(header,body){return"<table>\n"+"<thead>\n"+header+"</thead>\n"+"<tbody>\n"+body+"</tbody>\n"+"</table>\n"};Renderer.prototype.tablerow=function(content){return"<tr>\n"+content+"</tr>\n"};Renderer.prototype.tablecell=function(content,flags){var type=flags.header?"th":"td";var tag=flags.align?"<"+type+' style="text-align:'+flags.align+'">':"<"+type+">";return tag+content+"</"+type+">\n"};Renderer.prototype.strong=function(text){return"<strong>"+text+"</strong>"};Renderer.prototype.em=function(text){return"<em>"+text+"</em>"};Renderer.prototype.codespan=function(text){return"<code>"+text+"</code>"};Renderer.prototype.br=function(){return this.options.xhtml?"<br/>":"<br>"};Renderer.prototype.del=function(text){return"<del>"+text+"</del>"};Renderer.prototype.link=function(href,title,text){if(this.options.sanitize){try{var prot=decodeURIComponent(unescape(href)).replace(/[^\w:]/g,"").toLowerCase()}catch(e){return""}if(prot.indexOf("javascript:")===0){return""}}var out='<a href="'+href+'"';if(title){out+=' title="'+title+'"'}out+=">"+text+"</a>";return out};Renderer.prototype.image=function(href,title,text){var out='<img src="'+href+'" alt="'+text+'"';if(title){out+=' title="'+title+'"'}out+=this.options.xhtml?"/>":">";return out};function Parser(options){this.tokens=[];this.token=null;this.options=options||marked.defaults;this.options.renderer=this.options.renderer||new Renderer;this.renderer=this.options.renderer;this.renderer.options=this.options}Parser.parse=function(src,options,renderer){var parser=new Parser(options,renderer);return parser.parse(src)};Parser.prototype.parse=function(src){this.inline=new InlineLexer(src.links,this.options,this.renderer);this.tokens=src.reverse();var out="";while(this.next()){out+=this.tok()}return out};Parser.prototype.next=function(){return this.token=this.tokens.pop()};Parser.prototype.peek=function(){return this.tokens[this.tokens.length-1]||0};Parser.prototype.parseText=function(){var body=this.token.text;while(this.peek().type==="text"){body+="\n"+this.next().text}return this.inline.output(body)};Parser.prototype.tok=function(){switch(this.token.type){case"space":{return""}case"hr":{return this.renderer.hr()}case"heading":{return this.renderer.heading(this.inline.output(this.token.text),this.token.depth,this.token.text)}case"code":{return this.renderer.code(this.token.text,this.token.lang,this.token.escaped)}case"table":{var header="",body="",i,row,cell,flags,j;cell="";for(i=0;i<this.token.header.length;i++){flags={header:true,align:this.token.align[i]};cell+=this.renderer.tablecell(this.inline.output(this.token.header[i]),{header:true,align:this.token.align[i]})}header+=this.renderer.tablerow(cell);for(i=0;i<this.token.cells.length;i++){row=this.token.cells[i];cell="";for(j=0;j<row.length;j++){cell+=this.renderer.tablecell(this.inline.output(row[j]),{header:false,align:this.token.align[j]})}body+=this.renderer.tablerow(cell)}return this.renderer.table(header,body)}case"blockquote_start":{var body="";while(this.next().type!=="blockquote_end"){body+=this.tok()}return this.renderer.blockquote(body)}case"list_start":{var body="",ordered=this.token.ordered;while(this.next().type!=="list_end"){body+=this.tok()}return this.renderer.list(body,ordered)}case"list_item_start":{var body="";while(this.next().type!=="list_item_end"){body+=this.token.type==="text"?this.parseText():this.tok()}return this.renderer.listitem(body)}case"loose_item_start":{var body="";while(this.next().type!=="list_item_end"){body+=this.tok()}return this.renderer.listitem(body)}case"html":{var html=!this.token.pre&&!this.options.pedantic?this.inline.output(this.token.text):this.token.text;return this.renderer.html(html)}case"paragraph":{return this.renderer.paragraph(this.inline.output(this.token.text))}case"text":{return this.renderer.paragraph(this.parseText())}}};function escape(html,encode){return html.replace(!encode?/&(?!#?\w+;)/g:/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}function unescape(html){return html.replace(/&([#\w]+);/g,function(_,n){n=n.toLowerCase();if(n==="colon")return":";if(n.charAt(0)==="#"){return n.charAt(1)==="x"?String.fromCharCode(parseInt(n.substring(2),16)):String.fromCharCode(+n.substring(1))}return""})}function replace(regex,opt){regex=regex.source;opt=opt||"";return function self(name,val){if(!name)return new RegExp(regex,opt);val=val.source||val;val=val.replace(/(^|[^\[])\^/g,"$1");regex=regex.replace(name,val);return self}}function noop(){}noop.exec=noop;function merge(obj){var i=1,target,key;for(;i<arguments.length;i++){target=arguments[i];for(key in target){if(Object.prototype.hasOwnProperty.call(target,key)){obj[key]=target[key]}}}return obj}function marked(src,opt,callback){if(callback||typeof opt==="function"){if(!callback){callback=opt;opt=null}opt=merge({},marked.defaults,opt||{});var highlight=opt.highlight,tokens,pending,i=0;try{tokens=Lexer.lex(src,opt)}catch(e){return callback(e)}pending=tokens.length;var done=function(err){if(err){opt.highlight=highlight;return callback(err)}var out;try{out=Parser.parse(tokens,opt)}catch(e){err=e}opt.highlight=highlight;return err?callback(err):callback(null,out)};if(!highlight||highlight.length<3){return done()}delete opt.highlight;if(!pending)return done();for(;i<tokens.length;i++){(function(token){if(token.type!=="code"){return--pending||done()}return highlight(token.text,token.lang,function(err,code){if(err)return done(err);if(code==null||code===token.text){return--pending||done()}token.text=code;token.escaped=true;--pending||done()})})(tokens[i])}return}try{if(opt)opt=merge({},marked.defaults,opt);return Parser.parse(Lexer.lex(src,opt),opt)}catch(e){e.message+="\nPlease report this to https://github.com/chjj/marked.";if((opt||marked.defaults).silent){return"<p>An error occured:</p><pre>"+escape(e.message+"",true)+"</pre>"}throw e}}marked.options=marked.setOptions=function(opt){merge(marked.defaults,opt);return marked};marked.defaults={gfm:true,tables:true,breaks:false,pedantic:false,sanitize:false,smartLists:false,silent:false,highlight:null,langPrefix:"lang-",smartypants:false,headerPrefix:"",renderer:new Renderer,xhtml:false};marked.Parser=Parser;marked.parser=Parser.parse;marked.Renderer=Renderer;marked.Lexer=Lexer;marked.lexer=Lexer.lex;marked.InlineLexer=InlineLexer;marked.inlineLexer=InlineLexer.output;marked.parse=marked;if(typeof module!=="undefined"&&typeof exports==="object"){module.exports=marked}else if(typeof define==="function"&&define.amd){define(function(){return marked})}else{this.marked=marked}}).call(function(){return this||(typeof window!=="undefined"?window:global)}());
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Animation.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Animation.coffee ---- */
 
 
 (function() {
@@ -1139,6 +1176,9 @@
 
     Animation.prototype.slideDown = function(elem, props) {
       var cstyle, h, margin_bottom, margin_top, padding_bottom, padding_top, transition;
+      if (props.disableAnimation) {
+        return;
+      }
       h = elem.offsetHeight;
       cstyle = window.getComputedStyle(elem);
       margin_top = cstyle.marginTop;
@@ -1276,9 +1316,9 @@
     /*
     	showScramble: (elem, props) ->
     		text_original = elem.innerText
-
+    
     		chars = elem.innerText.split("")
-
+    
     		 * Convert characters to whitespace
     		clear_chars = chars.map (char) ->
     			if char != "\n" and char != "\r" and char != " " and char != "​"
@@ -1286,11 +1326,11 @@
     			else
     				return char
     		elem.innerText = clear_chars.join("")
-
+    
     		replaces = ["|", "[", "]", "/", "\\", "*", "-", "$", "~", "^", "#", ">", "<", "(", ")", "+", "%", "=", "!"]
     		replaces.sort ->
     			return 0.5-Math.random()
-
+    
     		frame = 0
     		timer = 0
     		replace_show = ->
@@ -1302,16 +1342,16 @@
     			if frame > chars.length/10
     				clearInterval(timer)
     				timer = setInterval text_show, 20
-
+    
     		text_show = ->
     			for i in [0..10]
-
-
+    
+    
     			clearInterval(timer)
-
+    
     		timer = setInterval replace_show, 20
-
-
+    
+    
     	scramble2: (elem, props) ->
     		text_original = elem.innerText
     		chars = elem.innerText.split("")
@@ -1339,7 +1379,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Autocomplete.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Autocomplete.coffee ---- */
 
 
 (function() {
@@ -1513,7 +1553,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Class.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Class.coffee ---- */
 
 
 (function() {
@@ -1570,7 +1610,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Dollar.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Dollar.coffee ---- */
 
 
 (function() {
@@ -1583,7 +1623,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/OrderManager.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/OrderManager.coffee ---- */
 
 
 (function() {
@@ -1700,7 +1740,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Prototypes.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Prototypes.coffee ---- */
 
 
 (function() {
@@ -1735,7 +1775,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/RateLimit.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/RateLimit.coffee ---- */
 
 
 (function() {
@@ -1764,7 +1804,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Text.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Text.coffee ---- */
 
 
 (function() {
@@ -1954,7 +1994,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Time.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/Time.coffee ---- */
 
 
 (function() {
@@ -2022,7 +2062,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/ZeroFrame.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/utils/ZeroFrame.coffee ---- */
 
 
 (function() {
@@ -2133,7 +2173,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/Leftbar.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/Leftbar.coffee ---- */
 
 
 (function() {
@@ -2172,6 +2212,7 @@
       var folder_name;
       folder_name = e.currentTarget.href.replace(/.*\?/, "");
       this.folder_active = folder_name.toLowerCase();
+      Page.message_lists.setActive(this.folder_active);
       Page.cmd("wrapperReplaceState", [{}, "", folder_name]);
       return false;
     };
@@ -2186,7 +2227,7 @@
     };
 
     Leftbar.prototype.loadContacts = function(cb) {
-      var address, addresses, query;
+      var address, addresses;
       addresses = (function() {
         var _results;
         _results = [];
@@ -2195,19 +2236,14 @@
         }
         return _results;
       })();
-      query = "SELECT directory, value AS cert_user_id\nFROM json\nLEFT JOIN keyvalue USING (json_id)\nWHERE ? AND file_name = 'content.json' AND key = 'cert_user_id'";
-      return Page.cmd("dbQuery", [
-        query, {
-          directory: addresses
-        }
-      ], function(rows) {
-        var contacts, row;
+      return Page.users.getUsernames(addresses, function(rows) {
+        var auth_address, cert_user_id, contacts;
         contacts = (function() {
-          var _i, _len, _results;
+          var _results;
           _results = [];
-          for (_i = 0, _len = rows.length; _i < _len; _i++) {
-            row = rows[_i];
-            _results.push([row.cert_user_id, row.directory]);
+          for (auth_address in rows) {
+            cert_user_id = rows[auth_address];
+            _results.push([cert_user_id, auth_address]);
           }
           return _results;
         })();
@@ -2270,34 +2306,36 @@
             key: "Inbox",
             href: "?Inbox",
             classes: {
-              "active": this.folder_active === "inbox"
+              "active": Page.message_lists.active === Page.message_lists.inbox
             },
             onclick: this.handleFolderClick
           }, ["Inbox"]), h("a", {
             key: "Sent",
             href: "?Sent",
             classes: {
-              "active": this.folder_active === "sent"
+              "active": Page.message_lists.active === Page.message_lists.sent
             },
             onclick: this.handleFolderClick
-          }, ["Sent"])
+          }, ["Sent", h("span.quota", Page.user.formatQuota())])
         ]), contacts.length > 0 ? [
-          h("h2", ["Contacts"]), h("div.contacts", contacts.map((function(_this) {
-            return function(_arg) {
-              var address, username;
-              username = _arg[0], address = _arg[1];
-              return h("a.username", {
-                key: username,
-                href: Page.createUrl("to", username.replace("@zeroid.bit", "")),
-                onclick: _this.handleContactClick,
-                "enterAnimation": Animation.show
-              }, [
-                h("span.bullet", {
-                  "style": "color: " + (Text.toColor(address))
-                }, ["•"]), h("span.name", [username.replace("@zeroid.bit", "")])
-              ]);
-            };
-          })(this)))
+          h("h2", ["Contacts"]), h("div.contacts-wrapper", [
+            h("div.contacts", contacts.map((function(_this) {
+              return function(_arg) {
+                var address, username;
+                username = _arg[0], address = _arg[1];
+                return h("a.username", {
+                  key: username,
+                  href: Page.createUrl("to", username.replace("@zeroid.bit", "")),
+                  onclick: _this.handleContactClick,
+                  "enterAnimation": Animation.show
+                }, [
+                  h("span.bullet", {
+                    "style": "color: " + (Text.toColor(address))
+                  }, ["•"]), h("span.name", [username.replace("@zeroid.bit", "")])
+                ]);
+              };
+            })(this)))
+          ])
         ] : void 0, ((_ref1 = Page.site_info) != null ? _ref1.cert_user_id : void 0) ? h("a.logout.icon.icon-logout", {
           href: "?Logout",
           title: "Logout",
@@ -2325,7 +2363,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/Message.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/Message.coffee ---- */
 
 
 (function() {
@@ -2346,6 +2384,7 @@
       this.handleDeleteClick = __bind(this.handleDeleteClick, this);
       this.handleListClick = __bind(this.handleListClick, this);
       this.active = false;
+      this.selected = false;
       this.deleted = false;
       this.key = this.row.key;
       if (this.row.folder === "sent" || Page.local_storage.read[this.row.date_added]) {
@@ -2371,15 +2410,39 @@
       return this.read = read;
     };
 
-    Message.prototype.handleListClick = function() {
+    Message.prototype.handleListClick = function(e) {
+      var active_index, message, my_index, _i, _len, _ref;
       this.markRead();
-      this.message_list.setActiveMessage(this);
-      Page.message_show.setMessage(this);
+      if (e && e.ctrlKey) {
+        this.selected = !this.selected;
+        if (this.message_list.message_lists.message_active) {
+          this.message_list.message_lists.message_active.active = false;
+          this.message_list.message_lists.message_active.selected = true;
+          this.message_list.message_lists.message_active = null;
+          Page.message_show.message = null;
+        }
+        this.message_list.updateSelected();
+      } else if (e && e.shiftKey) {
+        if (this.message_list.message_lists.message_active) {
+          active_index = this.message_list.messages.indexOf(this.message_list.message_lists.message_active);
+          my_index = this.message_list.messages.indexOf(this);
+          _ref = this.message_list.messages.slice(Math.min(active_index, my_index), +Math.max(active_index, my_index) + 1 || 9e9);
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            message = _ref[_i];
+            message.selected = true;
+          }
+        }
+        this.message_list.updateSelected();
+      } else {
+        this.message_list.setActiveMessage(this);
+        Page.message_show.setMessage(this);
+      }
       return false;
     };
 
     Message.prototype.handleDeleteClick = function() {
       this.message_list.deleteMessage(this);
+      this.message_list.save();
       return false;
     };
 
@@ -2408,7 +2471,7 @@
       var color;
       color = Text.toColor(address);
       return h("a.username", {
-        href: Page.createUrl("to", username.replace("zeroid.bit", "")),
+        href: Page.createUrl("to", username.replace("@zeroid.bit", "")),
         onclick: this.handleContactClick
       }, this.renderUsername(username, address));
     };
@@ -2428,10 +2491,12 @@
         "key": this.key,
         "href": "#MessageShow:" + this.row.key,
         "onclick": this.handleListClick,
+        "disableAnimation": this.row.disable_animation,
         "enterAnimation": Animation.slideDown,
         "exitAnimation": Animation.slideUp,
         classes: {
           "active": this.active,
+          "selected": this.selected,
           "unread": !this.read
         }
       }, [
@@ -2476,7 +2541,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageCreate.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageCreate.coffee ---- */
 
 
 (function() {
@@ -2531,7 +2596,7 @@
     };
 
     MessageCreate.prototype.isFilled = function() {
-      return this.body !== "" && this.subject !== "" && this.to !== "" && Page.user.data;
+      return this.body !== "" && this.subject !== "" && this.to !== "" && Page.user.publickey;
     };
 
     MessageCreate.prototype.setNode = function(node) {
@@ -2770,7 +2835,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageList.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageList.coffee ---- */
 
 
 (function() {
@@ -2785,10 +2850,14 @@
     function MessageList(_at_message_lists) {
       this.message_lists = _at_message_lists;
       this.render = __bind(this.render, this);
+      this.handleMoreClick = __bind(this.handleMoreClick, this);
       this.title = "Unknown";
       this.loading = false;
       this.loaded = false;
+      this.has_more = false;
+      this.loading_message = "Loading...";
       this.messages = [];
+      this.selected = [];
       this.message_db = {};
     }
 
@@ -2801,7 +2870,34 @@
         this.message_lists.message_active.active = false;
       }
       message.active = true;
-      return this.message_lists.message_active = message;
+      this.message_lists.message_active = message;
+      return this.deselectMessages();
+    };
+
+    MessageList.prototype.deselectMessages = function() {
+      var message, _i, _len, _ref;
+      _ref = this.selected;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        message = _ref[_i];
+        message.selected = false;
+      }
+      return this.updateSelected();
+    };
+
+    MessageList.prototype.updateSelected = function() {
+      var message;
+      return this.selected = (function() {
+        var _i, _len, _ref, _results;
+        _ref = this.messages;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          message = _ref[_i];
+          if (message.selected) {
+            _results.push(message);
+          }
+        }
+        return _results;
+      }).call(this);
     };
 
     MessageList.prototype.addMessage = function(message_row, index) {
@@ -2812,10 +2908,11 @@
       message = new Message(this, message_row);
       this.message_db[message_row.key] = message;
       if (index >= 0) {
-        return this.messages.splice(index, 0, message);
+        this.messages.splice(index, 0, message);
       } else {
-        return this.messages.push(message);
+        this.messages.push(message);
       }
+      return message;
     };
 
     MessageList.prototype.deleteMessage = function(message) {
@@ -2828,20 +2925,35 @@
     };
 
     MessageList.prototype.syncMessages = function(message_rows) {
-      var current_obj, message_row, _i, _len, _results;
-      this.messages = [];
+      var current_obj, last_obj, message_row, _i, _len, _results;
+      last_obj = null;
       _results = [];
       for (_i = 0, _len = message_rows.length; _i < _len; _i++) {
         message_row = message_rows[_i];
         current_obj = this.message_db[message_row.key];
         if (current_obj) {
           current_obj.row = message_row;
-          _results.push(this.messages.push(current_obj));
+          _results.push(last_obj = current_obj);
         } else {
-          _results.push(this.addMessage(message_row));
+          if (last_obj) {
+            _results.push(last_obj = this.addMessage(message_row, this.messages.indexOf(last_obj) + 1));
+          } else {
+            _results.push(last_obj = this.addMessage(message_row, 0));
+          }
         }
       }
       return _results;
+    };
+
+    MessageList.prototype.setLoadingMessage = function(_at_loading_message) {
+      this.loading_message = _at_loading_message;
+      return Page.projector.scheduleRender();
+    };
+
+    MessageList.prototype.handleMoreClick = function() {
+      this.reload = true;
+      this.getMessages("nolimit");
+      return false;
     };
 
     MessageList.prototype.render = function() {
@@ -2853,14 +2965,21 @@
           "enterAnimation": Animation.show
         }, messages.map(function(message) {
           return message.renderList();
-        }));
+        }), h("a.more", {
+          href: "#More",
+          classes: {
+            "visible": this.has_more,
+            "loading": this.loading
+          },
+          onclick: this.handleMoreClick
+        }, "Load more messages"));
       } else if (this.loading) {
         return h("div.MessageList.empty", {
           "key": this.title + ".loading",
           "enterAnimation": Animation.show,
           "afterCreate": Animation.show,
           "delay": 1
-        }, [this.title + ": Loading...", h("span.cursor", ["_"])]);
+        }, [this.title + ": " + this.loading_message, h("span.cursor", ["_"])]);
       } else {
         return h("div.MessageList.empty", {
           "key": this.title + ".empty",
@@ -2880,7 +2999,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageListInbox.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageListInbox.coffee ---- */
 
 
 (function() {
@@ -2896,6 +3015,8 @@
       MessageListInbox.__super__.constructor.apply(this, arguments);
       this.reload = true;
       this.loading = false;
+      this.loading_message = "Loading...";
+      this.nolimit_loaded = false;
       this.messages = [];
       this.my_aes_keys = {};
       this.title = "Inbox";
@@ -2910,7 +3031,7 @@
     };
 
     MessageListInbox.prototype.decryptKnownAesKeys = function(parsed_db, cb) {
-      var load_keys, query, secret_id, user_address, where;
+      var dates, directories, load_keys, query, secret_id, user_address, where;
       load_keys = ((function() {
         var _ref, _results;
         if (!this.my_aes_keys[user_address]) {
@@ -2924,17 +3045,27 @@
         }
       }).call(this));
       if (load_keys.length > 0) {
-        this.log("Loading keys", load_keys);
-        where = (function() {
+        this.log("Loading keys", load_keys.length);
+        directories = (function() {
           var _i, _len, _ref, _results;
           _results = [];
           for (_i = 0, _len = load_keys.length; _i < _len; _i++) {
             _ref = load_keys[_i], user_address = _ref[0], secret_id = _ref[1];
-            _results.push("(directory = '" + user_address + "' AND date_added = " + (parseInt(secret_id)) + ")");
+            _results.push("'" + user_address + "'");
           }
           return _results;
         })();
-        query = "SELECT * FROM secret LEFT JOIN json USING (json_id) WHERE " + (where.join(' OR '));
+        dates = (function() {
+          var _i, _len, _ref, _results;
+          _results = [];
+          for (_i = 0, _len = load_keys.length; _i < _len; _i++) {
+            _ref = load_keys[_i], user_address = _ref[0], secret_id = _ref[1];
+            _results.push(parseInt(secret_id));
+          }
+          return _results;
+        })();
+        where = "directory IN (" + (directories.join(',')) + ") AND date_added IN (" + (dates.join(',')) + ")";
+        query = "SELECT * FROM secret LEFT JOIN json USING (json_id) WHERE " + where;
         return Page.cmd("dbQuery", query, (function(_this) {
           return function(rows) {
             var row;
@@ -2967,43 +3098,51 @@
     };
 
     MessageListInbox.prototype.decryptNewSecrets = function(parsed_db, cb) {
-      var known_addresses, last_parsed, parsed_sql, query, user_address, where, _ref;
-      parsed_sql = [];
+      var known_addresses, last_parsed, query, user_address, user_last_parsed, where, _ref;
+      last_parsed = 0;
       known_addresses = [];
       _ref = parsed_db.last_secret;
       for (user_address in _ref) {
-        last_parsed = _ref[user_address];
-        parsed_sql.push("(directory = '" + user_address + "' AND date_added > " + last_parsed + ")");
+        user_last_parsed = _ref[user_address];
+        last_parsed = Math.max(user_last_parsed, last_parsed);
         known_addresses.push("'" + user_address + "'");
       }
+      this.log("Last parsed secret:", Date(last_parsed));
       if (known_addresses.length > 0) {
-        where = "WHERE " + (parsed_sql.join(' OR ')) + " OR directory NOT IN (" + (known_addresses.join(",")) + ")";
+        where = "WHERE date_added > " + (last_parsed - 60 * 60 * 24 * 1000) + " OR directory NOT IN (" + (known_addresses.join(",")) + ")";
       } else {
         where = "";
       }
       query = "SELECT * FROM secret\nLEFT JOIN json USING (json_id)\n" + where + "\nORDER BY date_added ASC";
       return Page.cmd("dbQuery", [query], (function(_this) {
         return function(db_res) {
-          var row, secrets;
+          var db_rows, row, secrets, _i, _len;
           if (!db_res.length) {
             cb(false);
             return false;
           }
+          db_rows = [];
+          for (_i = 0, _len = db_res.length; _i < _len; _i++) {
+            row = db_res[_i];
+            if ((parsed_db.last_secret[row.directory] == null) || parsed_db.last_secret[row.directory] < row.date_added) {
+              db_rows.push(row);
+            }
+          }
           secrets = (function() {
-            var _i, _len, _results;
+            var _j, _len1, _results;
             _results = [];
-            for (_i = 0, _len = db_res.length; _i < _len; _i++) {
-              row = db_res[_i];
+            for (_j = 0, _len1 = db_rows.length; _j < _len1; _j++) {
+              row = db_rows[_j];
               _results.push(row.encrypted);
             }
             return _results;
           })();
           return Page.cmd("eciesDecrypt", [secrets], function(aes_keys) {
-            var aes_key, db_row, i, new_secrets, _i, _len;
+            var aes_key, db_row, i, new_secrets, _j, _len1;
             new_secrets = {};
-            for (i = _i = 0, _len = aes_keys.length; _i < _len; i = ++_i) {
+            for (i = _j = 0, _len1 = aes_keys.length; _j < _len1; i = ++_j) {
               aes_key = aes_keys[i];
-              db_row = db_res[i];
+              db_row = db_rows[i];
               if (aes_key) {
                 new_secrets[db_row.directory] = db_row.date_added;
                 parsed_db.my_secret[db_row.directory] = db_row.date_added;
@@ -3018,12 +3157,20 @@
     };
 
     MessageListInbox.prototype.decryptNewMessages = function(parsed_db, new_secrets, cb) {
-      var aes_key, found, last_parsed, new_addresses, parsed_sql, query, user_address, where, _ref, _ref1;
+      var aes_key, found, group, last_parsed, new_addresses, parsed_sql, query, user_address, where, _ref, _ref1;
       parsed_sql = [];
+      group = [];
       _ref = parsed_db.last_message;
       for (user_address in _ref) {
         last_parsed = _ref[user_address];
-        parsed_sql.push("(directory = '" + user_address + "' AND date_added > " + last_parsed + ")");
+        group.push("(directory = '" + user_address + "' AND date_added > " + last_parsed + ")");
+        if (group.length === 100) {
+          parsed_sql.push("(" + group.join(" OR ") + ")");
+          group = [];
+        }
+      }
+      if (group.length > 0) {
+        parsed_sql.push("(" + group.join(" OR ") + ")");
       }
       new_addresses = [];
       _ref1 = this.my_aes_keys;
@@ -3086,7 +3233,7 @@
       })(this));
     };
 
-    MessageListInbox.prototype.loadMessages = function(parsed_db, cb) {
+    MessageListInbox.prototype.loadMessages = function(parsed_db, limit, cb) {
       var address, ids, my_message_ids, query, _ref;
       my_message_ids = [];
       _ref = parsed_db.my_message;
@@ -3095,6 +3242,9 @@
         my_message_ids = my_message_ids.concat(ids);
       }
       query = "SELECT message.*, json.directory, keyvalue.value AS username FROM message\nLEFT JOIN json USING (json_id)\nLEFT JOIN json AS json_content ON json_content.directory = json.directory AND json_content.file_name = \"content.json\"\nLEFT JOIN keyvalue ON keyvalue.json_id = json_content.json_id AND keyvalue.key = \"cert_user_id\"\nWHERE date_added IN (" + (my_message_ids.join(",")) + ") AND date_added NOT IN (" + (Page.local_storage.deleted.join(",")) + ")\nORDER BY date_added DESC";
+      if (limit) {
+        query += " LIMIT " + (limit + 1);
+      }
       return Page.cmd("dbQuery", [query], (function(_this) {
         return function(db_rows) {
           var aes_key, aes_keys, encrypted_messages, row;
@@ -3133,9 +3283,16 @@
               message_row.from = db_row.username;
               message_row.from_address = db_row.directory;
               message_row.folder = "inbox";
+              if (!limit) {
+                message_row.disable_animation = true;
+              }
+              if (i < limit || !limit) {
+                message_rows.push(message_row);
+              }
               message_rows.push(message_row);
             }
             _this.syncMessages(message_rows);
+            _this.has_more = limit && decrypted_messages.length >= limit && !_this.nolimit_loaded;
             Page.projector.scheduleRender();
             return cb(message_rows);
           });
@@ -3143,7 +3300,17 @@
       })(this));
     };
 
-    MessageListInbox.prototype.getMessages = function() {
+    MessageListInbox.prototype.getMessages = function(mode) {
+      var limit;
+      if (mode == null) {
+        mode = "normal";
+      }
+      if (mode === "nolimit") {
+        limit = null;
+        this.nolimit_loaded = true;
+      } else {
+        limit = 15;
+      }
       if (this.reload && Page.site_info) {
         this.loading = true;
         this.reload = false;
@@ -3152,24 +3319,28 @@
           return function() {
             var parsed_db;
             parsed_db = Page.local_storage.parsed;
+            _this.setLoadingMessage("Loading known AES keys...");
             return _this.decryptKnownAesKeys(parsed_db, function(loaded_keys) {
-              _this.log("Loaded known AES keys", loaded_keys);
+              _this.log("Loaded known AES keys");
+              _this.setLoadingMessage("Decrypting new secrets...");
               return _this.decryptNewSecrets(parsed_db, function(new_secrets) {
-                _this.log("New secrets found", new_secrets);
+                _this.log("New secrets found");
                 if (!isEmpty(new_secrets)) {
                   Page.leftbar.reload_contacts = true;
                 }
+                _this.setLoadingMessage("Decrypting new messages...");
                 return _this.decryptNewMessages(parsed_db, new_secrets, function(found) {
                   _this.log("New messages found", found);
-                  if (!found && _this.messages.length > 0) {
-                    _this.logEnd("getMessages", "No new messages");
+                  _this.setLoadingMessage("Loading messages...");
+                  if (!found && _this.messages.length > 0 && mode !== "nolimit") {
+                    _this.logEnd("getMessages", "No new messages in mode " + mode);
                     Page.local_storage.parsed = parsed_db;
                     _this.loading = false;
                     _this.loaded = true;
                     return false;
                   }
-                  return _this.loadMessages(parsed_db, function(message_rows) {
-                    _this.logEnd("getMessages", "Loaded messages", message_rows.length);
+                  return _this.loadMessages(parsed_db, limit, function(message_rows) {
+                    _this.logEnd("getMessages", "Loaded messages in mode " + mode, message_rows.length);
                     Page.local_storage.parsed = parsed_db;
                     Page.saveLocalStorage();
                     _this.loading = false;
@@ -3188,9 +3359,12 @@
       var _ref;
       MessageListInbox.__super__.deleteMessage.apply(this, arguments);
       if (_ref = message.row.message_id, __indexOf.call(Page.local_storage.deleted, _ref) < 0) {
-        Page.local_storage.deleted.push(message.row.message_id);
-        return Page.saveLocalStorage();
+        return Page.local_storage.deleted.push(message.row.message_id);
       }
+    };
+
+    MessageListInbox.prototype.save = function() {
+      return Page.saveLocalStorage();
     };
 
     return MessageListInbox;
@@ -3202,7 +3376,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageListSent.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageListSent.coffee ---- */
 
 
 (function() {
@@ -3218,16 +3392,33 @@
       MessageListSent.__super__.constructor.apply(this, arguments);
       this.reload = true;
       this.loading = false;
+      this.nolimit_loaded = false;
+      this.cleanup = false;
       this.messages = [];
       this.title = "Sent";
     }
 
-    MessageListSent.prototype.getMessages = function() {
-      var query;
+    MessageListSent.prototype.getMessages = function(mode, cb) {
+      var limit, query;
+      if (mode == null) {
+        mode = "normal";
+      }
+      if (cb == null) {
+        cb = null;
+      }
+      if (mode === "nolimit") {
+        limit = null;
+        this.nolimit_loaded = true;
+      } else {
+        limit = 15;
+      }
       if (this.reload && Page.site_info && Page.site_info.cert_user_id && !this.loading) {
         this.reload = false;
         this.loading = true;
         query = "SELECT date_added, encrypted\nFROM message\nLEFT JOIN json USING (json_id)\nWHERE ?\nORDER BY date_added DESC";
+        if (limit) {
+          query += " LIMIT " + (limit + 1);
+        }
         Page.cmd("dbQuery", [
           query, {
             "json.directory": Page.site_info.auth_address
@@ -3244,6 +3435,7 @@
               }
               return _results;
             })();
+            _this.setLoadingMessage("Decrypting sent secrets...");
             return Page.user.getDecryptedSecretsSent(function(sent_secrets) {
               var address, aes_key, keys;
               keys = (function() {
@@ -3251,10 +3443,11 @@
                 _results = [];
                 for (address in sent_secrets) {
                   aes_key = sent_secrets[address];
-                  _results.push(aes_key);
+                  _results.push(aes_key.replace(/.*:/, ""));
                 }
                 return _results;
               })();
+              _this.setLoadingMessage("Decrypting sent messages...");
               return Page.cmd("aesDecrypt", [encrypted_messages, keys], function(decrypted_messages) {
                 var decrypted_message, i, message_row, message_rows, usernames, _i, _len, _ref;
                 message_rows = [];
@@ -3270,7 +3463,12 @@
                   message_row.message_id = db_rows[i].date_added;
                   message_row.sender = "Unknown";
                   message_row.folder = "sent";
-                  message_rows.push(message_row);
+                  if (!limit) {
+                    message_row.disable_animation = true;
+                  }
+                  if (i < limit || !limit) {
+                    message_rows.push(message_row);
+                  }
                   if (_ref = message_row.to, __indexOf.call(usernames, _ref) < 0) {
                     usernames.push(message_row.to);
                   }
@@ -3285,26 +3483,111 @@
                     }
                   }
                   _this.syncMessages(message_rows);
+                  _this.has_more = limit && decrypted_messages.length > limit && !_this.nolimit_loaded;
                   Page.projector.scheduleRender();
                   _this.loading = false;
-                  return _this.loaded = true;
+                  _this.loaded = true;
+                  if (cb) {
+                    return cb(true);
+                  }
                 });
               });
             });
           };
         })(this));
+      } else {
+        if (cb) {
+          cb(false);
+        }
       }
       return this.messages;
     };
 
-    MessageListSent.prototype.deleteMessage = function(message) {
-      MessageListSent.__super__.deleteMessage.apply(this, arguments);
-      delete Page.user.data.message[message.row.message_id];
-      return Page.user.saveData().then((function(_this) {
-        return function(res) {
-          return _this.log("Delete result", res);
+    MessageListSent.prototype.cleanupSecretsSent = function(cb) {
+      if (this.has_more) {
+        this.reload = true;
+      }
+      return this.getMessages("nolimit", (function(_this) {
+        return function() {
+          var message_nums;
+          message_nums = _this.getMessagesBySender();
+          return Page.user.getDecryptedSecretsSent(function(secrets_sent) {
+            var address, secret, secret_id;
+            for (address in secrets_sent) {
+              secret = secrets_sent[address];
+              if (message_nums[address]) {
+                continue;
+              }
+              delete secrets_sent[address];
+              _this.log("Cleanup sent secret sent", address);
+              if (secret.indexOf(":") === -1) {
+                continue;
+              }
+              secret_id = Base64Number.toNumber(secret.replace(/:.*/, ""));
+              _this.log("Cleanup secret", address, secret_id);
+              delete Page.user.data.secret[secret_id.toString()];
+            }
+            return Page.cmd("eciesEncrypt", [JSON.stringify(secrets_sent)], function(secrets_sent_encrypted) {
+              if (!secrets_sent_encrypted) {
+                if (cb) {
+                  cb();
+                }
+                return false;
+              }
+              Page.user.data["secrets_sent"] = secrets_sent_encrypted;
+              if (cb) {
+                return cb();
+              }
+            });
+          });
         };
       })(this));
+    };
+
+    MessageListSent.prototype.getMessagesBySender = function() {
+      var message, messages, _i, _len, _name, _ref;
+      messages = {};
+      _ref = this.messages;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        message = _ref[_i];
+        if (messages[_name = message.row.to_address] == null) {
+          messages[_name] = [];
+        }
+        messages[message.row.to_address].push(message);
+      }
+      return messages;
+    };
+
+    MessageListSent.prototype.deleteMessage = function(message) {
+      var senders;
+      MessageListSent.__super__.deleteMessage.apply(this, arguments);
+      delete Page.user.data.message[message.row.message_id];
+      if (!this.has_more) {
+        senders = this.getMessagesBySender();
+        if (!senders[message.row.to_address]) {
+          this.log("Removing sent secrets to user", message.row.to);
+          return this.cleanup = true;
+        }
+      }
+    };
+
+    MessageListSent.prototype.save = function() {
+      if (this.cleanup) {
+        this.cleanupSecretsSent((function(_this) {
+          return function() {
+            return Page.user.saveData().then(function(res) {
+              return _this.log("Delete result", res);
+            });
+          };
+        })(this));
+        return this.cleanup = false;
+      } else {
+        return Page.user.saveData().then((function(_this) {
+          return function(res) {
+            return _this.log("Delete result", res);
+          };
+        })(this));
+      }
     };
 
     return MessageListSent;
@@ -3316,7 +3599,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageLists.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageLists.coffee ---- */
 
 
 (function() {
@@ -3332,11 +3615,17 @@
       this.render = __bind(this.render, this);
       this.inbox = new MessageListInbox(this);
       this.sent = new MessageListSent(this);
+      this.active = this.inbox;
       this.message_active = null;
     }
 
     MessageLists.prototype.getActive = function() {
-      return this[Page.leftbar.folder_active];
+      return this.active;
+    };
+
+    MessageLists.prototype.setActive = function(name) {
+      this.active.deselectMessages();
+      return this.active = this[name];
     };
 
     MessageLists.prototype.getActiveMessage = function() {
@@ -3344,7 +3633,7 @@
     };
 
     MessageLists.prototype.render = function() {
-      return h("div.MessageLists", [this.getActive().render()]);
+      return h("div.MessageLists", [this.active.render()]);
     };
 
     MessageLists.prototype.onSiteInfo = function(site_info) {
@@ -3369,7 +3658,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageShow.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/MessageShow.coffee ---- */
 
 
 (function() {
@@ -3391,9 +3680,34 @@
       return Page.projector.scheduleRender();
     };
 
+    MessageShow.prototype.handleMultiDeleteClick = function() {
+      var message, _i, _len, _ref;
+      _ref = Page.message_lists.active.selected;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        message = _ref[_i];
+        Page.message_lists.active.deleteMessage(message);
+      }
+      Page.message_lists.active.save();
+      Page.message_lists.active.deselectMessages();
+      return false;
+    };
+
     MessageShow.prototype.render = function() {
       var _ref;
-      return h("div.MessageShow", [Page.site_info && (!Page.site_info.cert_user_id || (!Page.user.data && Page.user.inited)) ? start_screen.renderNocert() : this.message ? this.message.renderShow() : Page.message_lists.getActive().messages.length > 0 || !Page.message_lists.getActive().loaded ? h("div") : ((_ref = Page.site_info) != null ? _ref.cert_user_id : void 0) && Page.user.loaded.result ? start_screen.renderNomessage() : h("div")]);
+      console.log("MessageShow render");
+      return h("div.MessageShow", [
+        Page.site_info && (!Page.site_info.cert_user_id || (!Page.user.publickey && Page.user.inited)) ? start_screen.renderNocert() : Page.message_lists.getActive().selected.length > 0 ? h("div.selected", {
+          "enterAnimation": Animation.show
+        }, [
+          h("a.icon.icon-trash.button-delete", {
+            href: "#Delete",
+            "title": "Delete messages",
+            onclick: this.handleMultiDeleteClick
+          }, ["Delete " + (Page.message_lists.getActive().selected.length) + " selected messages"])
+        ]) : this.message ? this.message.renderShow() : Page.message_lists.getActive().messages.length > 0 || !Page.message_lists.getActive().loaded ? h("div.empty", {
+          "enterAnimation": Animation.show
+        }, ["No message selected"]) : ((_ref = Page.site_info) != null ? _ref.cert_user_id : void 0) && Page.user.loaded.result ? start_screen.renderNomessage() : h("div")
+      ]);
     };
 
     return MessageShow;
@@ -3405,7 +3719,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/StartScreen.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/StartScreen.coffee ---- */
 
 
 (function() {
@@ -3534,7 +3848,7 @@
           }, "zeromail")
         ]), h("div.body", {
           afterCreate: this.renderBody
-        }, ["Hello " + (Page.site_info.cert_user_id.replace(/@.*/, "")) + "!\n\nWelcome to ZeroNet family, from now anyone able to message you in a simple and secure way.\n\nTo try this drop a message to our echobot@zeroid.bit and she will send it right back to you.\n\n_Best reguards: The users of ZeroNet_\n\n###### Ps: To keep you identity safe don't forget to backup your **data/users.json** file!"])
+        }, ["Hello " + (Page.site_info.cert_user_id.replace(/@.*/, "")) + "!\n\nWelcome to the ZeroNet family, from now on anyone is able to message you in a simple and secure way.\n\nTo try this drop a message to our echobot@zeroid.bit and she will send it right back to you.\n\n_Best reguards: The users of ZeroNet_\n\n###### PS: To keep your identity safe don't forget to backup your **data/users.json** file!"])
       ]);
     };
 
@@ -3547,7 +3861,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/User.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/User.coffee ---- */
 
 
 (function() {
@@ -3560,6 +3874,9 @@
 
     function User() {
       this.data = null;
+      this.publickey = null;
+      this.data_size = null;
+      this.file_rules = null;
       this.loading = false;
       this.inited = false;
       this.loaded = new Promise();
@@ -3572,8 +3889,11 @@
       })(this));
     }
 
-    User.prototype.getInnerPath = function() {
-      return "data/users/" + Page.site_info.auth_address + "/data.json";
+    User.prototype.getInnerPath = function(file_name) {
+      if (file_name == null) {
+        file_name = "data.json";
+      }
+      return "data/users/" + Page.site_info.auth_address + "/" + file_name;
     };
 
     User.prototype.getNewIndex = function(node) {
@@ -3604,11 +3924,31 @@
     };
 
     User.prototype.getPublickey = function(user_address, cb) {
-      return Page.cmd("fileGet", ["data/users/" + user_address + "/data.json"], (function(_this) {
+      return Page.cmd("fileGet", {
+        "inner_path": "data/users/" + user_address + "/content.json",
+        "required": false
+      }, (function(_this) {
         return function(res) {
           var data;
           data = JSON.parse(res);
-          return cb(data.publickey);
+          if (data != null ? data.publickey : void 0) {
+            return cb(data.publickey);
+          } else {
+            return Page.cmd("fileGet", {
+              "inner_path": "data/users/" + user_address + "/data.json",
+              "required": false
+            }, function(res) {
+              data = JSON.parse(res);
+              if (data != null ? data.publickey : void 0) {
+                return cb(data.publickey);
+              } else {
+                return Page.users.getArchived(function(archived) {
+                  var _ref;
+                  return cb((_ref = archived[user_address]) != null ? _ref["publickey"] : void 0);
+                });
+              }
+            });
+          }
         };
       })(this));
     };
@@ -3624,8 +3964,10 @@
             var encrypted, iv, key;
             key = res[0], iv = res[1], encrypted = res[2];
             return Page.cmd("eciesEncrypt", [key, publickey], function(secret) {
-              _this.data.secret[_this.getNewIndex("secret")] = secret;
-              secrets_sent[user_address] = key;
+              var secret_index;
+              secret_index = _this.getNewIndex("secret");
+              _this.data.secret[secret_index] = secret;
+              secrets_sent[user_address] = Base64Number.fromNumber(secret_index) + ":" + key;
               return Page.cmd("eciesEncrypt", [JSON.stringify(secrets_sent)], function(secrets_sent_encrypted) {
                 if (!secrets_sent_encrypted) {
                   return cb(false);
@@ -3646,7 +3988,7 @@
             secrets_sent = {};
           }
           if (secrets_sent[user_address]) {
-            return cb(secrets_sent[user_address]);
+            return cb(secrets_sent[user_address].replace(/.*:/, ""));
           } else {
             _this.log("Creating new secret for " + user_address);
             return _this.addSecret(secrets_sent, user_address, function(aes_key) {
@@ -3667,18 +4009,35 @@
       }, (function(_this) {
         return function(get_res) {
           if (get_res) {
+            _this.data_size = get_res.length;
             _this.data = JSON.parse(get_res);
+            _this.publickey = _this.data.publickey;
             _this.loaded.resolve();
             if (cb) {
               cb(true);
             }
+            _this.inited = true;
+            return Page.projector.scheduleRender();
           } else {
-            if (cb) {
-              cb(false);
-            }
+            return _this.getPublickey(Page.site_info.auth_address, function(get_res) {
+              if (get_res) {
+                _this.publickey = get_res;
+              }
+              _this.data = {
+                "secret": {},
+                "secrets_sent": "",
+                "publickey": _this.publickey,
+                "message": {},
+                "date_added": Date.now()
+              };
+              _this.loaded.resolve();
+              _this.inited = true;
+              if (cb) {
+                cb(false);
+              }
+              return Page.projector.scheduleRender();
+            });
           }
-          Page.projector.scheduleRender();
-          return _this.inited = true;
         };
       })(this));
     };
@@ -3716,6 +4075,7 @@
       }
       promise = new Promise();
       inner_path = this.getInnerPath();
+      this.data_size = Text.fileEncode(this.data).length;
       Page.cmd("fileWrite", [inner_path, Text.fileEncode(this.data)], (function(_this) {
         return function(write_res) {
           if (write_res !== "ok") {
@@ -3737,6 +4097,26 @@
         };
       })(this));
       return promise;
+    };
+
+    User.prototype.formatQuota = function() {
+      if (!this.file_rules) {
+        if (Page.site_info) {
+          this.file_rules = {};
+          Page.cmd("fileRules", this.getInnerPath(), (function(_this) {
+            return function(res) {
+              return _this.file_rules = res;
+            };
+          })(this));
+        }
+        return " ";
+      } else {
+        if (this.file_rules.max_size) {
+          return (parseInt(this.data_size / 1024 + 1)) + "k/" + (parseInt(this.file_rules.max_size / 1024)) + "k";
+        } else {
+          return " ";
+        }
+      }
     };
 
     User.prototype.onSiteInfo = function(site_info) {
@@ -3761,20 +4141,76 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/Users.coffee ---- */
+
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/Users.coffee ---- */
 
 
 (function() {
   var Users,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __hasProp = {}.hasOwnProperty;
+    __hasProp = {}.hasOwnProperty,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   Users = (function(_super) {
     __extends(Users, _super);
 
     function Users() {
+      this.getUsernames = __bind(this.getUsernames, this);
+      this.getArchived = __bind(this.getArchived, this);
       this.user_address = {};
+      this.archived = null;
     }
+
+    Users.prototype.getArchived = function(cb) {
+      if (this.archived) {
+        return cb(this.archived);
+      }
+      return Page.cmd("fileGet", "data/archived.json", (function(_this) {
+        return function(res) {
+          _this.archived = JSON.parse(res);
+          return cb(_this.archived);
+        };
+      })(this));
+    };
+
+    Users.prototype.getUsernames = function(addresses, cb) {
+      var query;
+      query = "SELECT directory, value AS cert_user_id\nFROM json\nLEFT JOIN keyvalue USING (json_id)\nWHERE ? AND file_name = 'content.json' AND key = 'cert_user_id'";
+      return Page.cmd("dbQuery", [
+        query, {
+          directory: addresses
+        }
+      ], (function(_this) {
+        return function(rows) {
+          var row, usernames, _i, _len;
+          usernames = {};
+          for (_i = 0, _len = rows.length; _i < _len; _i++) {
+            row = rows[_i];
+            usernames[row.directory] = row.cert_user_id;
+            _this.user_address[row.cert_user_id] = row.directory;
+          }
+          if (rows.length === addresses.length) {
+            cb(usernames);
+            return;
+          }
+          _this.log("Not found all username in sql, try to find in archived file");
+          return _this.getArchived(function(archived) {
+            var auth_address;
+            for (auth_address in archived) {
+              row = archived[auth_address];
+              _this.user_address[row.cert_user_id] = auth_address;
+              if (__indexOf.call(addresses, auth_address) >= 0) {
+                if (usernames[auth_address] == null) {
+                  usernames[auth_address] = row.cert_user_id;
+                }
+              }
+            }
+            return cb(usernames);
+          });
+        };
+      })(this));
+    };
 
     Users.prototype.getAddress = function(usernames, cb) {
       var query, unknown_address, username;
@@ -3804,7 +4240,7 @@
           var row, _i, _len;
           for (_i = 0, _len = rows.length; _i < _len; _i++) {
             row = rows[_i];
-            _this.user_address[row["value"]] = row["directory"];
+            _this.user_address[row.value] = row.directory;
           }
           return cb(_this.user_address);
         };
@@ -3821,9 +4257,16 @@
           _this.user_address = {};
           for (_i = 0, _len = rows.length; _i < _len; _i++) {
             row = rows[_i];
-            _this.user_address[row["value"]] = row["directory"];
+            _this.user_address[row.value] = row.directory;
           }
-          return cb(_this.user_address);
+          return _this.getArchived(function(archived) {
+            var auth_address;
+            for (auth_address in archived) {
+              row = archived[auth_address];
+              _this.user_address[row.cert_user_id] = auth_address;
+            }
+            return cb(_this.user_address);
+          });
         };
       })(this));
     };
@@ -3837,7 +4280,7 @@
 }).call(this);
 
 
-/* ---- data/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/ZeroMail.coffee ---- */
+/* ---- /1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27/js/ZeroMail.coffee ---- */
 
 
 (function() {
@@ -3878,7 +4321,6 @@
       } else {
         this.route(base.href.replace(/.*?\?/, ""));
       }
-      this.log($("#MessageLists"), $("#MessageShow"), $("#Leftbar"), $("#MessageCreate"));
       this.projector.replace($("#MessageLists"), this.message_lists.render);
       this.projector.replace($("#MessageShow"), this.message_show.render);
       this.projector.replace($("#Leftbar"), this.leftbar.render);
@@ -3900,7 +4342,7 @@
         this.cmd("wrapperReplaceState", [{}, "", this.createUrl("to", "")]);
       }
       if (this.params.url === "Sent") {
-        return this.leftbar.folder_active = "sent";
+        return this.message_lists.setActive("sent");
       }
     };
 
@@ -3936,6 +4378,12 @@
             }
             if ((_base2 = _this.local_storage).parsed == null) {
               _base2.parsed = {};
+            }
+            if ((_this.local_storage.parsed.version != null) < 1) {
+              _this.local_storage.parsed = {
+                "version": 1
+              };
+              console.log("Reindexing...");
             }
             if ((_base3 = _this.local_storage.parsed).last_secret == null) {
               _base3.last_secret = {};
@@ -3989,15 +4437,24 @@
     };
 
     ZeroMail.prototype.setSiteInfo = function(site_info) {
-      var _ref;
+      var limit_interval, _ref;
       this.site_info = site_info;
       if (((_ref = site_info.event) != null ? _ref[0] : void 0) === "cert_changed") {
         this.getLocalStorage();
       }
-      this.leftbar.onSiteInfo(site_info);
-      this.user.onSiteInfo(site_info);
-      this.message_create.onSiteInfo(site_info);
-      this.message_lists.onSiteInfo(site_info);
+      if (site_info.tasks > 20) {
+        limit_interval = 60000;
+      } else {
+        limit_interval = 6000;
+      }
+      RateLimit(limit_interval, (function(_this) {
+        return function() {
+          _this.leftbar.onSiteInfo(site_info);
+          _this.user.onSiteInfo(site_info);
+          _this.message_create.onSiteInfo(site_info);
+          return _this.message_lists.onSiteInfo(site_info);
+        };
+      })(this));
       this.projector.scheduleRender();
       this.getLocalStorage();
       return this.on_site_info.resolve();

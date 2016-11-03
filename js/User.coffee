@@ -1,6 +1,9 @@
 class User extends Class
 	constructor: ->
 		@data = null
+		@publickey = null
+		@data_size = null
+		@file_rules = null
 
 		@loading = false
 		@inited = false  # First load try done
@@ -11,8 +14,8 @@ class User extends Class
 			Page.projector.scheduleRender()
 
 
-	getInnerPath: ->
-		return "data/users/#{Page.site_info.auth_address}/data.json"
+	getInnerPath: (file_name = "data.json") ->
+		return "data/users/#{Page.site_info.auth_address}/#{file_name}"
 
 	# Find new avalible index
 	getNewIndex: (node) ->
@@ -34,9 +37,19 @@ class User extends Class
 				cb false
 
 	getPublickey: (user_address, cb) ->
-		Page.cmd "fileGet", ["data/users/#{user_address}/data.json"], (res) =>
+		Page.cmd "fileGet", {"inner_path": "data/users/#{user_address}/content.json", "required": false}, (res) =>
 			data = JSON.parse(res)
-			cb(data.publickey)
+			if data?.publickey
+				# User's publickey archived to content.json
+				cb(data.publickey)
+			else
+				Page.cmd "fileGet", {"inner_path": "data/users/#{user_address}/data.json", "required": false}, (res) =>
+					data = JSON.parse(res)
+					if data?.publickey
+						cb(data.publickey)
+					else
+						Page.users.getArchived (archived) =>
+							cb(archived[user_address]?["publickey"])
 
 	addSecret: (secrets_sent, user_address, cb) ->
 		@getPublickey user_address, (publickey) =>
@@ -47,9 +60,10 @@ class User extends Class
 				[key, iv, encrypted] = res
 				Page.cmd "eciesEncrypt", [key, publickey], (secret) =>  # Encrypt the new key for remote user
 					# Add for remote user
-					@data.secret[@getNewIndex("secret")] = secret
+					secret_index = @getNewIndex("secret")
+					@data.secret[secret_index] = secret
 					# Add key for me
-					secrets_sent[user_address] = key
+					secrets_sent[user_address] = Base64Number.fromNumber(secret_index)+":"+key
 					Page.cmd "eciesEncrypt", [JSON.stringify(secrets_sent)], (secrets_sent_encrypted) =>
 						if not secrets_sent_encrypted
 							return cb false
@@ -61,7 +75,7 @@ class User extends Class
 			if not secrets_sent
 				secrets_sent = {}
 			if secrets_sent[user_address]  # Already exits
-				return cb(secrets_sent[user_address])
+				return cb(secrets_sent[user_address].replace(/.*:/, ""))
 			else
 				@log "Creating new secret for #{user_address}"
 				@addSecret secrets_sent, user_address, (aes_key) ->
@@ -73,13 +87,22 @@ class User extends Class
 		@log "Loading user file", inner_path
 		Page.cmd "fileGet", {"inner_path": inner_path, "required": false}, (get_res) =>
 			if get_res
+				@data_size = get_res.length
 				@data = JSON.parse(get_res)
+				@publickey = @data.publickey
 				@loaded.resolve()
 				if cb then cb(true)
+				@inited = true
+				Page.projector.scheduleRender()
 			else
-				if cb then cb(false)
-			Page.projector.scheduleRender()
-			@inited = true
+				@getPublickey Page.site_info.auth_address, (get_res) =>
+					if get_res
+						@publickey = get_res
+					@data = {"secret": {}, "secrets_sent": "", "publickey": @publickey, "message": {}, "date_added": Date.now()}
+					@loaded.resolve()
+					@inited = true
+					if cb then cb(false)
+					Page.projector.scheduleRender()
 
 	createData: ->
 		inner_path = @getInnerPath()
@@ -98,6 +121,7 @@ class User extends Class
 	saveData: (publish=true) ->
 		promise = new Promise()
 		inner_path = @getInnerPath()
+		@data_size = Text.fileEncode(@data).length
 		Page.cmd "fileWrite", [inner_path, Text.fileEncode(@data)], (write_res) =>
 			if write_res != "ok"
 				Page.cmd "wrapperNotification", ["error", "File write error: #{write_res}"]
@@ -111,6 +135,20 @@ class User extends Class
 				else
 					promise.resolve()
 		return promise
+
+
+	formatQuota: ->
+		if not @file_rules
+			if Page.site_info
+				@file_rules = {}
+				Page.cmd "fileRules", @getInnerPath(), (res) =>
+					@file_rules = res
+			return " "
+		else
+			if @file_rules.max_size
+				return "#{parseInt(@data_size/1024+1)}k/#{parseInt(@file_rules.max_size/1024)}k"
+			else
+				return " "
 
 
 	onSiteInfo: (site_info) ->
